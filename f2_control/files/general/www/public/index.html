@@ -18,6 +18,11 @@
   .t .badge{font-size:.7rem;font-weight:700;color:#0b0f14;background:var(--acc);border-radius:999px;padding:2px 8px;margin-left:8px;vertical-align:2px}
   .d{color:var(--dim);font-size:.88rem;margin-top:4px;line-height:1.4}
   h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin:30px 0 12px}
+  .demo-toggle{display:flex;align-items:center;gap:10px;margin:0 0 28px;font-size:.9rem;color:var(--dim);user-select:none}
+  .demo-toggle input{appearance:none;-webkit-appearance:none;width:40px;height:22px;background:var(--edge);border-radius:999px;position:relative;cursor:pointer;transition:background .15s;flex:0 0 auto;margin:0}
+  .demo-toggle input:checked{background:var(--acc)}
+  .demo-toggle input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
+  .demo-toggle input:checked::after{transform:translateX(18px)}
 </style>
 </head>
 <body>
@@ -26,16 +31,21 @@
   <p class="sub">Every page runs standalone in the browser — no Home Assistant, no install.
   Source: <a href="https://github.com/JakeTheRabbit/HA-Irrigation-Strategy">JakeTheRabbit/HA-Irrigation-Strategy</a></p>
 
-  <h2>Dashboards (demo mode, mock data)</h2>
-  <a class="card" href="./f2.html">
+  <label class="demo-toggle">
+    <input type="checkbox" id="demo-toggle">
+    Use demo data <span>— opens the dashboards with baked-in mock data instead of live Home Assistant values</span>
+  </label>
+
+  <h2>Dashboards</h2>
+  <a class="card" data-demo href="./f2.html">
     <div class="t">F2 · Plant-State Intelligence<span class="badge">flagship</span></div>
     <div class="d">The unified operator dashboard — Status, Zones, Tune, Climate, Operate, Plan. Auto-enters demo mode with baked-in "perfect grow" data.</div>
   </a>
-  <a class="card" href="./crop_steering.html">
+  <a class="card" data-demo href="./crop_steering.html">
     <div class="t">F2 Crop Steering console</div>
     <div class="d">The earlier control console — phase state, per-zone control, settings. Superseded by F2 but fully browsable.</div>
   </a>
-  <a class="card" href="./crop_steering_tune.html">
+  <a class="card" data-demo href="./crop_steering_tune.html">
     <div class="t">Setpoint Tune editor</div>
     <div class="d">The science-grounded visual editor for the full crop-steering setpoint table, standalone.</div>
   </a>
@@ -58,5 +68,22 @@
     <div class="d">The hardware-side manual — plumbing, valves, pumps, sensors and maintenance.</div>
   </a>
 </main>
+<script>
+  // Demo toggle: off by default. When on, append ?demo to the dashboard links
+  // so they render baked-in mock data instead of live Home Assistant values.
+  (function () {
+    var toggle = document.getElementById('demo-toggle');
+    var links = document.querySelectorAll('a.card[data-demo]');
+    links.forEach(function (a) { a.dataset.base = a.getAttribute('href'); });
+    function apply() {
+      var on = toggle.checked;
+      links.forEach(function (a) {
+        a.setAttribute('href', a.dataset.base + (on ? '?demo' : ''));
+      });
+    }
+    toggle.addEventListener('change', apply);
+    apply();
+  })();
+</script>
 </body>
 </html>
