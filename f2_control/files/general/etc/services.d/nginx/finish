@@ -1,0 +1,2 @@
+#!/usr/bin/with-contenv sh
+# no-op: let s6 restart nginx if it exits
